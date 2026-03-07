@@ -11,6 +11,6 @@
 - [x] Install vitest, @vue/test-utils and jsdom (unit tests)
 - [x] Install Cypress and generate initial folder structure
 - [x] Install ESLint and Prettier, add `lint` script to package.json
-- [] Tests configuration
+- [x] Tests configuration
 - [] Install Tailwind CSS
 - [] Init shadcn-vue
