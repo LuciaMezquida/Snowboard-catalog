@@ -13,4 +13,4 @@
 - [x] Install ESLint and Prettier, add `lint` script to package.json
 - [x] Tests configuration
 - [x] Install Tailwind CSS
-- [] Init shadcn-vue
+- [x] Init shadcn-vue
