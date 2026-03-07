@@ -3,5 +3,13 @@
   "singleQuote": true,
   "printWidth": 100,
   "trailingComma": "es5",
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "useTabs": true
+      }
+    }
+  ]
 }

@@ -14,3 +14,4 @@
 - [x] Tests configuration
 - [x] Install Tailwind CSS
 - [x] Init shadcn-vue
+- [x] Add products mock
