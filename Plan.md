@@ -10,7 +10,7 @@
 - [x] Install vue-router@4
 - [x] Install vitest, @vue/test-utils and jsdom (unit tests)
 - [x] Install Cypress and generate initial folder structure
+- [x] Install ESLint and Prettier, add `lint` script to package.json
 - [] Tests configuration
-- [] ESLint and Prettier
 - [] Install Tailwind CSS
 - [] Init shadcn-vue
