@@ -10,6 +10,13 @@
       "options": {
         "useTabs": true
       }
+    },
+    {
+      "files": ["*.ts", "*.vue"],
+      "options": {
+        "tabWidth": 2,
+        "useTabs": false
+      }
     }
   ]
 }

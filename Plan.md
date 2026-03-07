@@ -19,4 +19,27 @@
 
 - [x] Add products mock
 - [x] Install TanStack table and the necessary shadcn components
-- [] Create basic table
+- [x] Create basic table
+
+### Complete table
+
+- [] Add tags in style
+- [] Pagination
+- [] Search
+- [] Filters
+- [] Actions columns
+
+### Details
+
+- [] Add sidepanel (navigation?). OnClick in every row
+- [] Display aditional info
+
+### CRUD
+
+- []
+- []
+
+### Tests
+
+- []
+- []
