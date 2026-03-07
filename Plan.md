@@ -14,4 +14,9 @@
 - [x] Tests configuration
 - [x] Install Tailwind CSS
 - [x] Init shadcn-vue
+
+### Set a basic table
+
 - [x] Add products mock
+- [x] Install TanStack table and the necessary shadcn components
+- [] Create basic table
