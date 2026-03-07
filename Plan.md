@@ -12,5 +12,5 @@
 - [x] Install Cypress and generate initial folder structure
 - [x] Install ESLint and Prettier, add `lint` script to package.json
 - [x] Tests configuration
-- [] Install Tailwind CSS
+- [x] Install Tailwind CSS
 - [] Init shadcn-vue
