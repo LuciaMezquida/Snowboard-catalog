@@ -7,8 +7,9 @@
 - [x] Initialize Vite project with Vue 3 and TypeScript (`vue-ts` template)
 - [x] Install dependencies (`npm install`)
 - [x] Update README with instructions to run the project
-- [] Install vue router
-- [] Install vue tests and cypress
+- [x] Install vue-router@4
+- [x] Install vitest, @vue/test-utils and jsdom (unit tests)
+- [x] Install Cypress and generate initial folder structure
 - [] Tests configuration
 - [] ESLint and Prettier
 - [] Install Tailwind CSS
