@@ -33,6 +33,18 @@ Preview the production build:
 npm run preview
 ```
 
+Run unit tests:
+
+```bash
+pnpm test
+```
+
+To run a specific test file:
+
+```bash
+pnpm test src/pages/ListPage/components/CategoryFilters/CategoryFilters.spec.ts
+```
+
 ## Project structure
 
 ```
