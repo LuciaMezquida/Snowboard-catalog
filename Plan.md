@@ -24,10 +24,11 @@
 ### Complete table
 
 - [x] Add tags in style and format gender
-- [] Pagination
-- [] Search
+- [x] Pagination
+- [x] Search
 - [] Filters
 - [] Actions columns
+- [] Empty state
 
 ### Details
 

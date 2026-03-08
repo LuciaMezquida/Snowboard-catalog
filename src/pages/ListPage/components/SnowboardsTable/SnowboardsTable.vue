@@ -11,6 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Search } from 'lucide-vue-next'
 
 const STYLE_BADGE_CLASSES: Record<string, string> = {
   all_mountain:
@@ -34,14 +36,19 @@ const props = defineProps<{
   page: number
   total: number
   limit: number
+  searchQuery?: string
   onPrevPage: () => void
   onNextPage: () => void
+}>()
+
+const emit = defineEmits<{
+  'update:searchQuery': [value: string]
 }>()
 
 const columnHelper = createColumnHelper<Snowboard>()
 const columns = [
   columnHelper.accessor('title', {
-    header: 'Title',
+    header: 'Name',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('brand', {
@@ -102,6 +109,21 @@ const table = useVueTable({
 
 <template>
   <div class="space-y-4">
+    <div class="flex justify-end">
+      <div class="relative w-72">
+        <Search
+          class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
+          aria-hidden
+        />
+        <Input
+          :model-value="props.searchQuery ?? ''"
+          type="search"
+          placeholder="Search by name, brand..."
+          class="h-9 w-full pl-9"
+          @update:model-value="emit('update:searchQuery', $event)"
+        />
+      </div>
+    </div>
     <div class="min-h-[440px]">
       <Table>
         <TableHeader>
