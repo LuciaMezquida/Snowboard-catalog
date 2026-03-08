@@ -5,6 +5,7 @@ import * as parserTs from '@typescript-eslint/parser'
 import pluginTs from '@typescript-eslint/eslint-plugin'
 import prettier from 'eslint-config-prettier'
 import pluginPrettier from 'eslint-plugin-prettier'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -33,6 +34,14 @@ export default [
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'vue/multi-word-component-names': 'off',
       'vue/require-default-prop': 'off',
+    },
+  },
+  {
+    files: ['**/*.spec.{ts,tsx}', '**/*.test.{ts,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
     },
   },
   {
