@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import { FlexRender, createColumnHelper, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
 import type { Snowboard } from '@/types/snowboard'
 import {
@@ -15,20 +15,16 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { PackageSearch, Search } from 'lucide-vue-next'
 import CategoryFilters from '../CategoryFilters/CategoryFilters.vue'
+import DetailSidepanel from '../DetailsSidepanel/DetailSidepanel.vue'
 import type { Gender, Style } from '@/types/snowboard'
-import { formatStyleLabel } from '@/lib/utils'
+import { formatPrice, formatStyleLabel, getStyleBadgeClass } from '@/lib/utils'
 
-const STYLE_BADGE_CLASSES: Record<string, string> = {
-  all_mountain:
-    'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
-  freestyle:
-    'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
-  freeride:
-    'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
-}
+const sheetOpen = ref(false)
+const selectedSnowboard = ref<Snowboard | null>(null)
 
-function getStyleBadgeClass(style: string): string {
-  return STYLE_BADGE_CLASSES[style] ?? 'bg-muted text-muted-foreground border-border'
+function openRowDetail(snowboard: Snowboard) {
+  selectedSnowboard.value = snowboard
+  sheetOpen.value = true
 }
 
 const props = defineProps<{
@@ -61,13 +57,7 @@ const columns = [
   }),
   columnHelper.accessor('price', {
     header: 'Price',
-    cell: (info) => {
-      const cents = info.getValue() ?? 0
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'EUR',
-      }).format(cents / 100)
-    },
+    cell: (info) => formatPrice(info.getValue() ?? 0),
   }),
   columnHelper.accessor('discountPercentage', {
     header: 'Discount',
@@ -170,7 +160,12 @@ const table = useVueTable({
               </p>
             </div>
           </TableEmpty>
-          <TableRow v-for="row in table.getRowModel().rows" :key="row.id">
+          <TableRow
+            v-for="row in table.getRowModel().rows"
+            :key="row.id"
+            class="cursor-pointer"
+            @click="openRowDetail(row.original)"
+          >
             <TableCell
               v-for="cell in row.getVisibleCells()"
               :key="cell.id"
@@ -211,5 +206,7 @@ const table = useVueTable({
         Next
       </button>
     </div>
+
+    <DetailSidepanel v-model:open="sheetOpen" :selected-snowboard="selectedSnowboard" />
   </div>
 </template>

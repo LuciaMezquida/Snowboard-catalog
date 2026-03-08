@@ -32,8 +32,8 @@
 
 ### Details
 
-- [] Add sidepanel (navigation?). OnClick in every row
-- [] Display aditional info
+- [x] Add sidepanel. OnClick in every row
+- [x] Display aditional info
 
 ### Create/Edit form
 
