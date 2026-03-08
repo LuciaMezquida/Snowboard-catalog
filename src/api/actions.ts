@@ -77,3 +77,10 @@ export async function fetchSnowboardsFiltered(
     limit: filtered.length,
   }
 }
+
+// Mutations
+
+export async function deleteProduct(id: number): Promise<void> {
+  const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, { method: 'DELETE' })
+  if (!res.ok) throw new Error('Failed to delete product')
+}

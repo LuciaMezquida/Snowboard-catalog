@@ -38,6 +38,7 @@ const props = defineProps<{
   styles?: Style[]
   onPrevPage: () => void
   onNextPage: () => void
+  onDelete?: (id: number) => void | Promise<void>
 }>()
 
 const emit = defineEmits<{
@@ -129,9 +130,15 @@ const columns = [
                 'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground hover:text-destructive',
               'aria-label': `Delete ${title}`,
               title: `Delete ${title}`,
-              onClick: (e) => {
+              onClick: async (e) => {
                 e.stopPropagation()
-                // TODO: delete action
+                if (props.onDelete) {
+                  await props.onDelete(snowboard.id)
+                  if (selectedSnowboard.value?.id === snowboard.id) {
+                    sheetOpen.value = false
+                    selectedSnowboard.value = null
+                  }
+                }
               },
             },
             [h(Trash2, { class: 'size-4' })]
