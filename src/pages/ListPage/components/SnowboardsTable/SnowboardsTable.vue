@@ -14,6 +14,9 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { PackageSearch, Search } from 'lucide-vue-next'
+import CategoryFilters from '../CategoryFilters/CategoryFilters.vue'
+import type { Gender, Style } from '@/types/snowboard'
+import { formatStyleLabel } from '@/lib/utils'
 
 const STYLE_BADGE_CLASSES: Record<string, string> = {
   all_mountain:
@@ -22,10 +25,6 @@ const STYLE_BADGE_CLASSES: Record<string, string> = {
     'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
   freeride:
     'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
-}
-
-function formatStyleLabel(style: string): string {
-  return style.replace(/_/g, ' ')
 }
 
 function getStyleBadgeClass(style: string): string {
@@ -38,12 +37,16 @@ const props = defineProps<{
   total: number
   limit: number
   searchQuery?: string
+  gender?: Gender | ''
+  styles?: Style[]
   onPrevPage: () => void
   onNextPage: () => void
 }>()
 
 const emit = defineEmits<{
   'update:searchQuery': [value: string]
+  'update:gender': [value: Gender | '']
+  'update:styles': [value: Style[]]
 }>()
 
 const columnHelper = createColumnHelper<Snowboard>()
@@ -110,8 +113,14 @@ const table = useVueTable({
 
 <template>
   <div class="space-y-4">
-    <div class="flex justify-end">
-      <div class="relative w-72">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <CategoryFilters
+        :gender="props.gender ?? ''"
+        :styles="props.styles ?? []"
+        @update:gender="emit('update:gender', $event)"
+        @update:styles="emit('update:styles', $event)"
+      />
+      <div class="relative w-64 shrink-0">
         <Search
           class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
           aria-hidden
@@ -121,7 +130,7 @@ const table = useVueTable({
           type="search"
           placeholder="Search by name, brand..."
           class="h-9 w-full pl-9"
-          @update:model-value="emit('update:searchQuery', $event)"
+          @update:model-value="emit('update:searchQuery', String($event))"
         />
       </div>
     </div>
@@ -188,7 +197,10 @@ const table = useVueTable({
         Previous
       </button>
       <span class="text-sm text-muted-foreground">
-        Page {{ props.page + 1 }} of {{ Math.max(1, Math.ceil(props.total / props.limit)) }}
+        Page {{ props.page + 1 }} of {{ Math.max(1, Math.ceil(props.total / props.limit)) }} ({{
+          props.total
+        }}
+        items)
       </span>
       <button
         type="button"

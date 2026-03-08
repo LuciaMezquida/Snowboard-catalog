@@ -26,18 +26,18 @@
 - [x] Add tags in style and format gender
 - [x] Pagination
 - [x] Search
-- [] Filters
+- [x] Filters
 - [] Actions columns
-- [] Empty state
+- [x] Empty state
 
 ### Details
 
 - [] Add sidepanel (navigation?). OnClick in every row
 - [] Display aditional info
 
-### Edit form
+### Create/Edit form
 
-- [] Create edit form
+- [] Create create/edit form
 - []
 
 ### CRUD

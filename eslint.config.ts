@@ -31,6 +31,8 @@ export default [
       ...pluginTs.configs.recommended.rules,
       'prettier/prettier': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'vue/multi-word-component-names': 'off',
+      'vue/require-default-prop': 'off',
     },
   },
   {

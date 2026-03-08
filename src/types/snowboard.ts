@@ -1,6 +1,11 @@
 export type Gender = 'male' | 'female' | 'unisex'
 export type Style = 'all_mountain' | 'freeride' | 'freestyle'
 
+export interface CategoryFilters {
+  gender: Gender | ''
+  styles: Style[]
+}
+
 export interface Snowboard {
   id: number
   title: string

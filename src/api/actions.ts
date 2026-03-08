@@ -1,4 +1,4 @@
-import type { Snowboard } from '@/types/snowboard'
+import type { Snowboard, CategoryFilters } from '@/types/snowboard'
 
 const SNOWBOARDS_API_URL = 'https://dummyjson.com/c/5ab5-caac-4d58-81cf'
 export const QUERY_LIMIT = 10
@@ -11,6 +11,8 @@ export interface SnowboardsResponse {
   skip?: number
   limit?: number
 }
+
+// Read
 
 export async function fetchSnowboards(limit = QUERY_LIMIT, skip = 0): Promise<SnowboardsResponse> {
   const url = `${SNOWBOARDS_API_URL}?limit=${limit}&skip=${skip}`
@@ -39,18 +41,35 @@ async function fetchAllSnowboards(): Promise<Snowboard[]> {
   return allSnowboards
 }
 
+// Search and filters
+
 function matchesSearch(product: Snowboard, searchValue: string): boolean {
   const value = searchValue.toLowerCase().trim()
   const fields = [product.title, product.brand]
   return fields.some((f) => String(f).toLowerCase().includes(value))
 }
 
-export async function searchSnowboards(searchValue: string): Promise<SnowboardsResponse> {
-  if (!searchValue.trim()) {
-    return fetchSnowboards(QUERY_LIMIT, 0)
+function matchesCategoryFilters(product: Snowboard, filters: CategoryFilters): boolean {
+  if (filters.gender && product.gender !== filters.gender) return false
+  if (filters.styles.length > 0) {
+    const hasStyle = filters.styles.some((s) => product.style?.includes(s))
+    if (!hasStyle) return false
   }
+  return true
+}
+
+export async function fetchSnowboardsFiltered(
+  searchValue: string,
+  filters: CategoryFilters
+): Promise<SnowboardsResponse> {
   const all = await fetchAllSnowboards()
-  const filtered = all.filter((p) => matchesSearch(p, searchValue))
+  let filtered = all
+  if (searchValue.trim()) {
+    filtered = filtered.filter((product) => matchesSearch(product, searchValue))
+  }
+  if (filters.gender || filters.styles.length > 0) {
+    filtered = filtered.filter((product) => matchesCategoryFilters(product, filters))
+  }
   return {
     products: filtered,
     total: filtered.length,
