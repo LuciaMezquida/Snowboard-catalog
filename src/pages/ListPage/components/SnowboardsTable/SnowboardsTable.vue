@@ -6,13 +6,14 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableEmpty,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-vue-next'
+import { PackageSearch, Search } from 'lucide-vue-next'
 
 const STYLE_BADGE_CLASSES: Record<string, string> = {
   all_mountain:
@@ -148,6 +149,18 @@ const table = useVueTable({
           </TableRow>
         </TableHeader>
         <TableBody>
+          <TableEmpty v-if="props.snowboards.length === 0" :colspan="7">
+            <div class="flex flex-col items-center gap-3">
+              <PackageSearch class="size-10 text-muted-foreground" aria-hidden />
+              <p class="text-base text-muted-foreground">
+                {{
+                  props.searchQuery?.trim()
+                    ? 'No snowboards match your search.'
+                    : 'No snowboards found.'
+                }}
+              </p>
+            </div>
+          </TableEmpty>
           <TableRow v-for="row in table.getRowModel().rows" :key="row.id">
             <TableCell
               v-for="cell in row.getVisibleCells()"
