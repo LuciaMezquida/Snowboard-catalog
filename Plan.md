@@ -27,7 +27,7 @@
 - [x] Pagination
 - [x] Search
 - [x] Filters
-- [] Actions columns
+- [x] Actions columns
 - [x] Empty state
 
 ### Details
@@ -38,12 +38,12 @@
 ### Create/Edit form
 
 - [] Create create/edit form
-- []
+- [] Create item
+- [] Edit item
 
-### CRUD
+### Delete
 
-- []
-- []
+- [] Delete item
 
 ### Tests
 

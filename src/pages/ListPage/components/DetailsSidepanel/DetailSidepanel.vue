@@ -53,12 +53,12 @@ defineEmits<{
             <dt class="text-base font-medium text-muted-foreground">Style</dt>
             <dd class="mt-1 flex flex-wrap gap-1">
               <Badge
-                v-for="s in selectedSnowboard.style"
-                :key="s"
-                :class="getStyleBadgeClass(s)"
-                class="capitalize"
+                v-for="style in selectedSnowboard.style"
+                :key="style"
+                :class="getStyleBadgeClass(style)"
+                class="whitespace-nowrap capitalize"
               >
-                {{ formatStyleLabel(s) }}
+                {{ formatStyleLabel(style) }}
               </Badge>
             </dd>
           </div>

@@ -12,8 +12,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PackageSearch, Search } from 'lucide-vue-next'
+import { PackageSearch, Pencil, Plus, Search, Trash2 } from 'lucide-vue-next'
 import CategoryFilters from '../CategoryFilters/CategoryFilters.vue'
 import DetailSidepanel from '../DetailsSidepanel/DetailSidepanel.vue'
 import type { Gender, Style } from '@/types/snowboard'
@@ -84,9 +85,58 @@ const columns = [
       return h(
         'div',
         { class: 'flex flex-wrap gap-1' },
-        styles.map((s) =>
-          h(Badge, { class: `capitalize ${getStyleBadgeClass(s)}` }, () => formatStyleLabel(s))
+        styles.map((style) =>
+          h(Badge, { class: `whitespace-nowrap capitalize ${getStyleBadgeClass(style)}` }, () =>
+            formatStyleLabel(style)
+          )
         )
+      )
+    },
+  }),
+  columnHelper.display({
+    id: 'actions',
+    header: '',
+    cell: (info) => {
+      const snowboard = info.row.original
+      const title = snowboard.title
+      return h(
+        'div',
+        {
+          class: 'flex items-center gap-2',
+          onClick: (e) => e.stopPropagation(),
+        },
+        [
+          h(
+            'button',
+            {
+              type: 'button',
+              class:
+                'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground',
+              'aria-label': `Edit ${title}`,
+              title: `Edit ${title}`,
+              onClick: (e) => {
+                e.stopPropagation()
+                // TODO: edit action
+              },
+            },
+            [h(Pencil, { class: 'size-4' })]
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              class:
+                'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground hover:text-destructive',
+              'aria-label': `Delete ${title}`,
+              title: `Delete ${title}`,
+              onClick: (e) => {
+                e.stopPropagation()
+                // TODO: delete action
+              },
+            },
+            [h(Trash2, { class: 'size-4' })]
+          ),
+        ]
       )
     },
   }),
@@ -110,18 +160,24 @@ const table = useVueTable({
         @update:gender="emit('update:gender', $event)"
         @update:styles="emit('update:styles', $event)"
       />
-      <div class="relative w-64 shrink-0">
-        <Search
-          class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
-          aria-hidden
-        />
-        <Input
-          :model-value="props.searchQuery ?? ''"
-          type="search"
-          placeholder="Search by name, brand..."
-          class="h-9 w-full pl-9"
-          @update:model-value="emit('update:searchQuery', String($event))"
-        />
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="relative w-64">
+          <Search
+            class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none"
+            aria-hidden
+          />
+          <Input
+            :model-value="props.searchQuery ?? ''"
+            type="search"
+            placeholder="Search by name, brand..."
+            class="h-9 w-full pl-9"
+            @update:model-value="emit('update:searchQuery', String($event))"
+          />
+        </div>
+        <Button size="sm">
+          <Plus class="size-4 shrink-0" aria-hidden />
+          Add
+        </Button>
       </div>
     </div>
     <div class="min-h-[440px]">
@@ -137,6 +193,7 @@ const table = useVueTable({
                 'text-right': ['price', 'discountPercentage', 'stock'].includes(header.column.id),
                 'pl-6': ['discountPercentage', 'gender'].includes(header.column.id),
                 capitalize: header.column.id === 'gender',
+                'w-24': header.column.id === 'actions',
               }"
             >
               <FlexRender
@@ -148,7 +205,7 @@ const table = useVueTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableEmpty v-if="props.snowboards.length === 0" :colspan="7">
+          <TableEmpty v-if="props.snowboards.length === 0" :colspan="8">
             <div class="flex flex-col items-center gap-3">
               <PackageSearch class="size-10 text-muted-foreground" aria-hidden />
               <p class="text-base text-muted-foreground">
@@ -174,6 +231,7 @@ const table = useVueTable({
                 'text-right': ['price', 'discountPercentage', 'stock'].includes(cell.column.id),
                 'pl-6': ['discountPercentage', 'gender'].includes(cell.column.id),
                 capitalize: cell.column.id === 'gender',
+                'w-24': cell.column.id === 'actions',
               }"
             >
               <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
@@ -192,10 +250,11 @@ const table = useVueTable({
         Previous
       </button>
       <span class="text-sm text-muted-foreground">
-        Page {{ props.page + 1 }} of {{ Math.max(1, Math.ceil(props.total / props.limit)) }} ({{
-          props.total
+        {{
+          props.total === 0
+            ? '0 of 0'
+            : `${props.page * props.limit + 1}-${Math.min((props.page + 1) * props.limit, props.total)} of ${props.total}`
         }}
-        items)
       </span>
       <button
         type="button"
