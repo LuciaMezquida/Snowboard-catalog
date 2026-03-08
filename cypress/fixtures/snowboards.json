@@ -1,0 +1,49 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Burton Custom X",
+      "description": "All-mountain board for versatile riding",
+      "shape": "Directional",
+      "price": 59900,
+      "discountPercentage": 10,
+      "brand": "Burton",
+      "stock": 15,
+      "style": ["all_mountain", "freestyle"],
+      "gender": "unisex",
+      "sizes": [150, 154, 158],
+      "stiffness": 7
+    },
+    {
+      "id": 2,
+      "title": "Jones Frontier",
+      "description": "Freeride board for powder",
+      "shape": "Twin",
+      "price": 44900,
+      "discountPercentage": 0,
+      "brand": "Jones",
+      "stock": 8,
+      "style": ["freeride"],
+      "gender": "male",
+      "sizes": [156, 160],
+      "stiffness": 6
+    },
+    {
+      "id": 3,
+      "title": "Lib Tech Orca",
+      "description": "Quiver killer for all conditions",
+      "shape": "Directional",
+      "price": 64900,
+      "discountPercentage": 5,
+      "brand": "Lib Tech",
+      "stock": 12,
+      "style": ["all_mountain", "freeride"],
+      "gender": "unisex",
+      "sizes": [147, 150, 153, 156],
+      "stiffness": 8
+    }
+  ],
+  "total": 3,
+  "skip": 0,
+  "limit": 3
+}

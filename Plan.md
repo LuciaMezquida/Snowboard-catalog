@@ -49,8 +49,8 @@
 
 ### Tests
 
-- []
-- []
+- [x] Unit tests for CategoryFilters, DeleteConfirmationModal, DetailSidepanel, ProductFormDialog, SnowboardsTable
+- [x] E2E tests for list, detail, create, edit, delete flows
 
 ### Improvements
 

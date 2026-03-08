@@ -45,12 +45,24 @@ To run a specific test file:
 pnpm test src/pages/ListPage/components/CategoryFilters/CategoryFilters.spec.ts
 ```
 
+Run E2E tests (start the dev server first with `pnpm dev` in another terminal):
+
+```bash
+pnpm test:e2e
+```
+
+Or open Cypress interactively:
+
+```bash
+pnpm test:e2e:open
+```
+
 ## Project structure
 
 ```
 ├── cypress/                        # E2E tests (Cypress)
-│   ├── e2e/                        # Test specs
-│   ├── fixtures/                   # Mock data
+│   ├── e2e/                        # Test specs (snowboards.cy.ts)
+│   ├── fixtures/                   # Mock data (snowboards.json)
 │   └── support/                    # Custom commands and setup
 ├── public/                         # Static assets served as-is
 ├── src/
@@ -58,8 +70,6 @@ pnpm test src/pages/ListPage/components/CategoryFilters/CategoryFilters.spec.ts
 │   ├── assets/                     # Images, fonts, and other static assets
 │   ├── components/
 │   │   └── ui/                     # shadcn-vue UI components (table, button, input, badge…)
-│   ├── data/
-│   │   └── snowboards.json         # Local mock data for development and tests
 │   ├── lib/
 │   │   └── utils.ts                # Shared utilities (cn, etc.)
 │   ├── pages/
