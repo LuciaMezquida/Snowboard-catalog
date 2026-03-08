@@ -41,6 +41,10 @@ async function fetchAllSnowboards(): Promise<Snowboard[]> {
   return allSnowboards
 }
 
+export function invalidateSnowboardsCache(): void {
+  allSnowboards = null
+}
+
 // Search and filters
 
 function matchesSearch(product: Snowboard, searchValue: string): boolean {
@@ -79,6 +83,34 @@ export async function fetchSnowboardsFiltered(
 }
 
 // Mutations
+
+export type CreateSnowboardPayload = Omit<Snowboard, 'id'>
+export type UpdateSnowboardPayload = Partial<CreateSnowboardPayload>
+
+export async function createProduct(payload: CreateSnowboardPayload): Promise<Snowboard> {
+  const res = await fetch(`${SNOWBOARDS_API_URL}/add`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error('Failed to create product')
+  const data = (await res.json()) as Snowboard
+  return data
+}
+
+export async function updateProduct(
+  id: number,
+  payload: UpdateSnowboardPayload
+): Promise<Snowboard> {
+  const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error('Failed to update product')
+  const data = (await res.json()) as Snowboard
+  return data
+}
 
 export async function deleteProduct(id: number): Promise<void> {
   const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, { method: 'DELETE' })

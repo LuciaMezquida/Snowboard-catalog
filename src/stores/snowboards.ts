@@ -1,7 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Snowboard, CategoryFilters as CategoryFiltersType } from '@/types/snowboard'
-import { fetchSnowboards, fetchSnowboardsFiltered, deleteProduct, QUERY_LIMIT } from '@/api/actions'
+import {
+  fetchSnowboards,
+  fetchSnowboardsFiltered,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  invalidateSnowboardsCache,
+  QUERY_LIMIT,
+} from '@/api/actions'
+import type { CreateSnowboardPayload, UpdateSnowboardPayload } from '@/api/actions'
 
 export const useSnowboardsStore = defineStore('snowboards', () => {
   const snowboards = ref<Snowboard[]>([])
@@ -50,6 +59,22 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
     await loadPage()
   }
 
+  async function createSnowboard(payload: CreateSnowboardPayload): Promise<Snowboard> {
+    const created = await createProduct(payload)
+    invalidateSnowboardsCache()
+    snowboards.value = [created, ...snowboards.value]
+    total.value++
+    return created
+  }
+
+  async function updateSnowboard(id: number, payload: UpdateSnowboardPayload): Promise<Snowboard> {
+    const updated = await updateProduct(id, payload)
+    invalidateSnowboardsCache()
+    const index = snowboards.value.findIndex((s) => s.id === id)
+    if (index >= 0) snowboards.value[index] = updated
+    return updated
+  }
+
   async function deleteSnowboard(id: number) {
     await deleteProduct(id)
     deletedIds.value = new Set([...deletedIds.value, id])
@@ -87,6 +112,8 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
     hasFilters,
     loadPage,
     runSearch,
+    createSnowboard,
+    updateSnowboard,
     deleteSnowboard,
     setPage,
     nextPage,

@@ -38,8 +38,8 @@
 ### Create/Edit form
 
 - [] Create create/edit form
-- [] Create item
-- [] Edit item
+- [x] Create item mutation
+- [x] Update item mutation
 
 ### Delete
 
