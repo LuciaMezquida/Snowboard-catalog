@@ -14,6 +14,9 @@ export default [
     files: ['**/*.{ts,tsx,vue}'],
     languageOptions: {
       parser: parserVue,
+      globals: {
+        fetch: 'readonly',
+      },
       parserOptions: {
         parser: parserTs,
         sourceType: 'module',

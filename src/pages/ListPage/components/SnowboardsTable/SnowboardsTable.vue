@@ -31,6 +31,11 @@ function getStyleBadgeClass(style: string): string {
 
 const props = defineProps<{
   snowboards: Snowboard[]
+  page: number
+  total: number
+  limit: number
+  onPrevPage: () => void
+  onNextPage: () => void
 }>()
 
 const columnHelper = createColumnHelper<Snowboard>()
@@ -96,41 +101,68 @@ const table = useVueTable({
 </script>
 
 <template>
-  <Table>
-    <TableHeader>
-      <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-        <TableHead
-          v-for="header in headerGroup.headers"
-          :key="header.id"
-          :colspan="header.colSpan"
-          :class="{
-            'text-right': ['price', 'discountPercentage', 'stock'].includes(header.column.id),
-            'pl-6': ['discountPercentage', 'gender'].includes(header.column.id),
-            capitalize: header.column.id === 'gender',
-          }"
-        >
-          <FlexRender
-            v-if="!header.isPlaceholder"
-            :render="header.column.columnDef.header"
-            :props="header.getContext()"
-          />
-        </TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      <TableRow v-for="row in table.getRowModel().rows" :key="row.id">
-        <TableCell
-          v-for="cell in row.getVisibleCells()"
-          :key="cell.id"
-          :class="{
-            'text-right': ['price', 'discountPercentage', 'stock'].includes(cell.column.id),
-            'pl-6': ['discountPercentage', 'gender'].includes(cell.column.id),
-            capitalize: cell.column.id === 'gender',
-          }"
-        >
-          <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-        </TableCell>
-      </TableRow>
-    </TableBody>
-  </Table>
+  <div class="space-y-4">
+    <div class="min-h-[440px]">
+      <Table>
+        <TableHeader>
+          <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+            <TableHead
+              v-for="header in headerGroup.headers"
+              :key="header.id"
+              :colspan="header.colSpan"
+              :class="{
+                'w-[240px]': header.column.id === 'title',
+                'text-right': ['price', 'discountPercentage', 'stock'].includes(header.column.id),
+                'pl-6': ['discountPercentage', 'gender'].includes(header.column.id),
+                capitalize: header.column.id === 'gender',
+              }"
+            >
+              <FlexRender
+                v-if="!header.isPlaceholder"
+                :render="header.column.columnDef.header"
+                :props="header.getContext()"
+              />
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="row in table.getRowModel().rows" :key="row.id">
+            <TableCell
+              v-for="cell in row.getVisibleCells()"
+              :key="cell.id"
+              :class="{
+                'w-[240px]': cell.column.id === 'title',
+                'text-right': ['price', 'discountPercentage', 'stock'].includes(cell.column.id),
+                'pl-6': ['discountPercentage', 'gender'].includes(cell.column.id),
+                capitalize: cell.column.id === 'gender',
+              }"
+            >
+              <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+    <div class="mt-4 flex items-center justify-between">
+      <button
+        type="button"
+        class="rounded border px-4 py-2 disabled:opacity-50"
+        :disabled="props.page === 0"
+        @click="props.onPrevPage"
+      >
+        Previous
+      </button>
+      <span class="text-sm text-muted-foreground">
+        Page {{ props.page + 1 }} of {{ Math.max(1, Math.ceil(props.total / props.limit)) }}
+      </span>
+      <button
+        type="button"
+        class="rounded border px-4 py-2 disabled:opacity-50"
+        :disabled="(props.page + 1) * props.limit >= props.total"
+        @click="props.onNextPage"
+      >
+        Next
+      </button>
+    </div>
+  </div>
 </template>
