@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SnowboardsTable from './components/SnowboardsTable.vue'
+import SnowboardsTable from './components/SnowboardsTable/SnowboardsTable.vue'
 import snowboardsData from '@/data/snowboards.json'
 import type { Snowboard } from '@/types/snowboard'
 

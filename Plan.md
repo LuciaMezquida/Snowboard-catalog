@@ -23,7 +23,7 @@
 
 ### Complete table
 
-- [] Add tags in style
+- [x] Add tags in style and format gender
 - [] Pagination
 - [] Search
 - [] Filters
@@ -33,6 +33,11 @@
 
 - [] Add sidepanel (navigation?). OnClick in every row
 - [] Display aditional info
+
+### Edit form
+
+- [] Create edit form
+- []
 
 ### CRUD
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { h } from 'vue'
 import { FlexRender, createColumnHelper, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
 import type { Snowboard } from '@/types/snowboard'
 import {
@@ -9,6 +10,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+
+const STYLE_BADGE_CLASSES: Record<string, string> = {
+  all_mountain:
+    'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
+  freestyle:
+    'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800',
+  freeride:
+    'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
+}
+
+function formatStyleLabel(style: string): string {
+  return style.replace(/_/g, ' ')
+}
+
+function getStyleBadgeClass(style: string): string {
+  return STYLE_BADGE_CLASSES[style] ?? 'bg-muted text-muted-foreground border-border'
+}
 
 const props = defineProps<{
   snowboards: Snowboard[]
@@ -50,16 +69,19 @@ const columns = [
   }),
   columnHelper.accessor('gender', {
     header: 'Gender',
-    cell: (info) => {
-      const gender = info.getValue() ?? 'unisex'
-      return gender
-    },
+    cell: (info) => info.getValue() ?? 'unisex',
   }),
   columnHelper.accessor('style', {
     header: 'Style',
     cell: (info) => {
-      const style = info.getValue() ?? []
-      return style.join(', ')
+      const styles = info.getValue() ?? []
+      return h(
+        'div',
+        { class: 'flex flex-wrap gap-1' },
+        styles.map((s) =>
+          h(Badge, { class: `capitalize ${getStyleBadgeClass(s)}` }, () => formatStyleLabel(s))
+        )
+      )
     },
   }),
 ]
@@ -81,7 +103,11 @@ const table = useVueTable({
           v-for="header in headerGroup.headers"
           :key="header.id"
           :colspan="header.colSpan"
-          :class="{ 'text-right': ['price'].includes(header.column.id) }"
+          :class="{
+            'text-right': ['price', 'discountPercentage', 'stock'].includes(header.column.id),
+            'pl-6': ['discountPercentage', 'gender'].includes(header.column.id),
+            capitalize: header.column.id === 'gender',
+          }"
         >
           <FlexRender
             v-if="!header.isPlaceholder"
@@ -96,7 +122,11 @@ const table = useVueTable({
         <TableCell
           v-for="cell in row.getVisibleCells()"
           :key="cell.id"
-          :class="{ 'text-right': ['price'].includes(cell.column.id) }"
+          :class="{
+            'text-right': ['price', 'discountPercentage', 'stock'].includes(cell.column.id),
+            'pl-6': ['discountPercentage', 'gender'].includes(cell.column.id),
+            capitalize: cell.column.id === 'gender',
+          }"
         >
           <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
         </TableCell>

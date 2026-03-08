@@ -1,4 +1,5 @@
 export type Gender = 'male' | 'female' | 'unisex'
+export type Style = 'all_mountain' | 'freeride' | 'freestyle'
 
 export interface Snowboard {
   id: number
@@ -9,7 +10,7 @@ export interface Snowboard {
   discountPercentage: number
   brand: string
   stock: number
-  style: string[]
+  style: Style[]
   gender: Gender
   sizes: number[]
   stiffness: number
