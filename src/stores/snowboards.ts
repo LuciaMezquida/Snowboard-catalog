@@ -75,8 +75,7 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
     const created: Snowboard = { ...payload, id }
     localCreated.value = [created, ...localCreated.value]
     invalidateSnowboardsCache()
-    snowboards.value = [created, ...snowboards.value]
-    total.value++
+    await loadPage()
     return created
   }
 

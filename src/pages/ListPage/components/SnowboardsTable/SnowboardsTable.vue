@@ -233,7 +233,7 @@ const table = useVueTable({
         </Button>
       </div>
     </div>
-    <div class="min-h-[440px]">
+    <div class="h-[560px]">
       <Table>
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">

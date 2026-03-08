@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch, onMounted } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDebounceFn } from '@vueuse/core'
 import SnowboardsTable from './components/SnowboardsTable/SnowboardsTable.vue'
@@ -7,6 +7,8 @@ import { useSnowboardsStore } from '@/stores/snowboards'
 
 const store = useSnowboardsStore()
 const { searchQuery, gender, styles, displayedSnowboards, page, total } = storeToRefs(store)
+
+const tableSnowboards = computed(() => (displayedSnowboards.value ?? []).slice(0, store.limit))
 
 const debouncedSearch = useDebounceFn(store.runSearch, 300)
 
@@ -34,7 +36,7 @@ onMounted(store.loadPage)
       v-model:search-query="searchQuery"
       v-model:gender="gender"
       v-model:styles="styles"
-      :snowboards="displayedSnowboards"
+      :snowboards="tableSnowboards"
       :page="page"
       :total="total"
       :limit="store.limit"
