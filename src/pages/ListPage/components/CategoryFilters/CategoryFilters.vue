@@ -11,19 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, Square, SquareCheck } from 'lucide-vue-next'
-import { formatStyleLabel } from '@/lib/utils'
-
-const GENDER_OPTIONS: { value: Gender | ''; label: string }[] = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-  { value: 'unisex', label: 'Unisex' },
-]
-
-const STYLE_OPTIONS: { value: Style; label: string }[] = [
-  { value: 'all_mountain', label: 'All mountain' },
-  { value: 'freestyle', label: 'Freestyle' },
-  { value: 'freeride', label: 'Freeride' },
-]
+import { formatStyleLabel, GENDER_OPTIONS, STYLE_OPTIONS } from '@/lib/utils'
 
 const props = defineProps<{
   gender: Gender | ''

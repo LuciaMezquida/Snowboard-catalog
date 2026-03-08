@@ -3,13 +3,15 @@ import { ref, computed } from 'vue'
 import type { Snowboard, CategoryFilters as CategoryFiltersType } from '@/types/snowboard'
 import {
   fetchSnowboardsFiltered,
-  createProduct,
-  updateProduct,
   deleteProduct,
   invalidateSnowboardsCache,
+  matchesSearch,
+  matchesCategoryFilters,
   QUERY_LIMIT,
 } from '@/api/actions'
-import type { CreateSnowboardPayload, UpdateSnowboardPayload } from '@/api/actions'
+
+export type CreateSnowboardPayload = Omit<Snowboard, 'id'>
+export type UpdateSnowboardPayload = Partial<CreateSnowboardPayload>
 
 export const useSnowboardsStore = defineStore('snowboards', () => {
   const snowboards = ref<Snowboard[]>([])
@@ -21,43 +23,57 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   const styles = ref<CategoryFiltersType['styles']>([])
 
   const deletedIds = ref<Set<number>>(new Set())
+  const localCreated = ref<Snowboard[]>([])
+  const localUpdated = ref<Map<number, Snowboard>>(new Map())
+  const nextLocalIdCounter = ref(0)
 
   const hasFilters = computed(() => !!gender.value || styles.value.length > 0)
 
   const displayedSnowboards = computed(() => {
-    if (!searchQuery.value.trim() && !hasFilters.value) return snowboards.value
     const start = page.value * limit
     return snowboards.value.slice(start, start + limit)
   })
+
+  function mergeWithLocal(apiProducts: Snowboard[]): Snowboard[] {
+    const updated = new Map(localUpdated.value)
+    const filters = { gender: gender.value, styles: styles.value }
+    const created = localCreated.value
+      .filter((p) => {
+        if (searchQuery.value.trim() && !matchesSearch(p, searchQuery.value)) return false
+        if (!matchesCategoryFilters(p, filters)) return false
+        return true
+      })
+      .map((p) => updated.get(p.id) ?? p)
+    const merged = apiProducts
+      .filter((p) => !deletedIds.value.has(p.id))
+      .map((p) => updated.get(p.id) ?? p)
+    return [...created, ...merged]
+  }
 
   async function loadPage() {
     const response = await fetchSnowboardsFiltered(searchQuery.value, {
       gender: gender.value,
       styles: styles.value,
     })
-    const filtered = response.products.filter((product) => !deletedIds.value.has(product.id))
-    total.value = filtered.length
-
-    if (searchQuery.value.trim() || hasFilters.value) {
-      snowboards.value = filtered
-    } else {
-      const start = page.value * limit
-      snowboards.value = filtered.slice(start, start + limit)
-    }
+    const merged = mergeWithLocal(response.products)
+    total.value = merged.length
+    snowboards.value = merged
   }
 
   async function runSearch() {
     page.value = 0
-    if (!searchQuery.value.trim() && !hasFilters.value) {
-      snowboards.value = []
-      await loadPage()
-      return
-    }
     await loadPage()
   }
 
+  function nextLocalId(): number {
+    nextLocalIdCounter.value--
+    return nextLocalIdCounter.value
+  }
+
   async function createSnowboard(payload: CreateSnowboardPayload): Promise<Snowboard> {
-    const created = await createProduct(payload)
+    const id = nextLocalId()
+    const created: Snowboard = { ...payload, id }
+    localCreated.value = [created, ...localCreated.value]
     invalidateSnowboardsCache()
     snowboards.value = [created, ...snowboards.value]
     total.value++
@@ -65,35 +81,41 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   }
 
   async function updateSnowboard(id: number, payload: UpdateSnowboardPayload): Promise<Snowboard> {
-    const updated = await updateProduct(id, payload)
+    const existing =
+      snowboards.value.find((s) => s.id === id) ??
+      localUpdated.value.get(id) ??
+      localCreated.value.find((s) => s.id === id)
+    const updated: Snowboard = { ...existing, ...payload, id } as Snowboard
+    localUpdated.value = new Map(localUpdated.value)
+    localUpdated.value.set(id, updated)
     invalidateSnowboardsCache()
     const index = snowboards.value.findIndex((s) => s.id === id)
-    if (index >= 0) snowboards.value[index] = updated
+    if (index >= 0) {
+      snowboards.value = [
+        ...snowboards.value.slice(0, index),
+        updated,
+        ...snowboards.value.slice(index + 1),
+      ]
+    }
     return updated
   }
 
   async function deleteSnowboard(id: number) {
-    await deleteProduct(id)
+    const isLocal = localCreated.value.some((s) => s.id === id)
+    if (!isLocal) await deleteProduct(id)
     deletedIds.value = new Set([...deletedIds.value, id])
+    localCreated.value = localCreated.value.filter((s) => s.id !== id)
+    localUpdated.value = new Map(localUpdated.value)
+    localUpdated.value.delete(id)
     await loadPage()
   }
 
-  function setPage(value: number) {
-    page.value = value
-  }
-
   function nextPage() {
-    if ((page.value + 1) * limit < total.value) {
-      page.value++
-      if (!searchQuery.value.trim() && !hasFilters.value) loadPage()
-    }
+    if ((page.value + 1) * limit < total.value) page.value++
   }
 
   function prevPage() {
-    if (page.value > 0) {
-      page.value--
-      if (!searchQuery.value.trim() && !hasFilters.value) loadPage()
-    }
+    if (page.value > 0) page.value--
   }
 
   return {
@@ -111,7 +133,6 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
     createSnowboard,
     updateSnowboard,
     deleteSnowboard,
-    setPage,
     nextPage,
     prevPage,
   }

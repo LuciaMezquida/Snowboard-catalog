@@ -47,13 +47,13 @@ export function invalidateSnowboardsCache(): void {
 
 // Search and filters
 
-function matchesSearch(product: Snowboard, searchValue: string): boolean {
+export function matchesSearch(product: Snowboard, searchValue: string): boolean {
   const value = searchValue.toLowerCase().trim()
   const fields = [product.title, product.brand]
   return fields.some((f) => String(f).toLowerCase().includes(value))
 }
 
-function matchesCategoryFilters(product: Snowboard, filters: CategoryFilters): boolean {
+export function matchesCategoryFilters(product: Snowboard, filters: CategoryFilters): boolean {
   if (filters.gender && product.gender !== filters.gender) return false
   if (filters.styles.length > 0) {
     const hasStyle = filters.styles.some((s) => product.style?.includes(s))
@@ -83,34 +83,6 @@ export async function fetchSnowboardsFiltered(
 }
 
 // Mutations
-
-export type CreateSnowboardPayload = Omit<Snowboard, 'id'>
-export type UpdateSnowboardPayload = Partial<CreateSnowboardPayload>
-
-export async function createProduct(payload: CreateSnowboardPayload): Promise<Snowboard> {
-  const res = await fetch(`${SNOWBOARDS_API_URL}/add`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  if (!res.ok) throw new Error('Failed to create product')
-  const data = (await res.json()) as Snowboard
-  return data
-}
-
-export async function updateProduct(
-  id: number,
-  payload: UpdateSnowboardPayload
-): Promise<Snowboard> {
-  const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  if (!res.ok) throw new Error('Failed to update product')
-  const data = (await res.json()) as Snowboard
-  return data
-}
 
 export async function deleteProduct(id: number): Promise<void> {
   const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, { method: 'DELETE' })

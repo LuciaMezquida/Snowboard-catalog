@@ -95,9 +95,13 @@ The product list uses [TanStack Table](https://tanstack.com/table) instead of a 
 
 **Pragmatism.** TanStack Table is the industry standard for headless table logic in both React and Vue ecosystems. Reaching for it avoids reinventing solved problems and means the solution is familiar to any developer joining the project.
 
+### Create and update handled in the frontend
+
+DummyJSON does not support POST or PUT. Create and update are therefore handled entirely in the frontend: the store maintains `localCreated` and `localUpdated` state, merges it with API data when loading, and the UI behaves as if mutations were persisted. Reads still come from the API; writes are local-only.
+
 ### Side panel for product details
 
-Product details open in a side panel instead of navigating to a separate page. This keeps the full product list visible while the user reviews a specific item, making it easy to compare or move between entries without losing context. A side panel is also sufficient to display all the relevant product information, so the added complexity of a dedicated route and page is not justified.
+Product details open in a side panel instead of navigating to a separate page. This keeps the full product list visible while the user reviews a specific item, making it easy to compare or move between entries without losing context. A side panel is also sufficient to display all the relevant product information, so the added complexity of a dedicated route and page is not justified. There is no need to run a separate `GET /products/:id` for the details: the data is already available from the list read, so we avoid an extra request and any loading delay when opening the panel.
 
 ## Tech stack
 

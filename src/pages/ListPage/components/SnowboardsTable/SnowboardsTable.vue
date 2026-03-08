@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, ref, watch } from 'vue'
+import { h, ref, watch, toRefs } from 'vue'
 import { FlexRender, createColumnHelper, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
 import type { Snowboard } from '@/types/snowboard'
 import {
@@ -18,6 +18,7 @@ import { PackageSearch, Pencil, Plus, Search, Trash2 } from 'lucide-vue-next'
 import CategoryFilters from '../CategoryFilters/CategoryFilters.vue'
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal.vue'
 import DetailSidepanel from '../DetailsSidepanel/DetailSidepanel.vue'
+import ProductFormDialog from '../ProductFormDialog/ProductFormDialog.vue'
 import type { Gender, Style } from '@/types/snowboard'
 import { formatPrice, formatStyleLabel, getStyleBadgeClass } from '@/lib/utils'
 
@@ -25,6 +26,8 @@ const sheetOpen = ref(false)
 const selectedSnowboard = ref<Snowboard | null>(null)
 const deleteDialogOpen = ref(false)
 const snowboardToDelete = ref<Snowboard | null>(null)
+const formDialogOpen = ref(false)
+const snowboardToEdit = ref<Snowboard | null>(null)
 
 function openRowDetail(snowboard: Snowboard) {
   selectedSnowboard.value = snowboard
@@ -53,8 +56,28 @@ function cancelDelete() {
   snowboardToDelete.value = null
 }
 
+function openCreateDialog() {
+  snowboardToEdit.value = null
+  formDialogOpen.value = true
+}
+
+function openEditDialog(snowboard: Snowboard) {
+  snowboardToEdit.value = snowboard
+  formDialogOpen.value = true
+}
+
+function handleFormChanges(snowboard: Snowboard) {
+  if (selectedSnowboard.value?.id === snowboard.id) {
+    selectedSnowboard.value = snowboard
+  }
+}
+
 watch(deleteDialogOpen, (open) => {
   if (!open) snowboardToDelete.value = null
+})
+
+watch(formDialogOpen, (open) => {
+  if (!open) snowboardToEdit.value = null
 })
 
 const props = defineProps<{
@@ -69,6 +92,8 @@ const props = defineProps<{
   onNextPage: () => void
   onDelete?: (id: number) => void | Promise<void>
 }>()
+
+const { snowboards: snowboardsRef } = toRefs(props)
 
 const emit = defineEmits<{
   'update:searchQuery': [value: string]
@@ -141,22 +166,7 @@ const columns = [
             {
               type: 'button',
               class:
-                'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground',
-              'aria-label': `Edit ${title}`,
-              title: `Edit ${title}`,
-              onClick: (e) => {
-                e.stopPropagation()
-                // TODO: edit action
-              },
-            },
-            [h(Pencil, { class: 'size-4' })]
-          ),
-          h(
-            'button',
-            {
-              type: 'button',
-              class:
-                'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground hover:text-destructive',
+                'rounded-full p-2.5 text-muted-foreground text-red-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400',
               'aria-label': `Delete ${title}`,
               title: `Delete ${title}`,
               onClick: (e) => {
@@ -166,6 +176,21 @@ const columns = [
             },
             [h(Trash2, { class: 'size-4' })]
           ),
+          h(
+            'button',
+            {
+              type: 'button',
+              class:
+                'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground',
+              'aria-label': `Edit ${title}`,
+              title: `Edit ${title}`,
+              onClick: (e) => {
+                e.stopPropagation()
+                openEditDialog(snowboard)
+              },
+            },
+            [h(Pencil, { class: 'size-4' })]
+          ),
         ]
       )
     },
@@ -173,9 +198,7 @@ const columns = [
 ]
 
 const table = useVueTable({
-  get data() {
-    return props.snowboards
-  },
+  data: snowboardsRef,
   columns,
   getCoreRowModel: getCoreRowModel(),
 })
@@ -204,7 +227,7 @@ const table = useVueTable({
             @update:model-value="emit('update:searchQuery', String($event))"
           />
         </div>
-        <Button size="sm">
+        <Button size="sm" @click="openCreateDialog">
           <Plus class="size-4 shrink-0" aria-hidden />
           Add
         </Button>
@@ -306,6 +329,12 @@ const table = useVueTable({
       :snowboard="snowboardToDelete"
       @confirm="confirmDelete"
       @cancel="cancelDelete"
+    />
+
+    <ProductFormDialog
+      v-model:open="formDialogOpen"
+      :snowboard="snowboardToEdit"
+      @saved="handleFormChanges"
     />
   </div>
 </template>

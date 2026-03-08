@@ -37,9 +37,10 @@
 
 ### Create/Edit form
 
-- [] Create create/edit form
+- [x] Create create/edit form
 - [x] Create item mutation
 - [x] Update item mutation
+- [x] Add form validations
 
 ### Delete
 
