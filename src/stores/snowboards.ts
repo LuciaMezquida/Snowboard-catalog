@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Snowboard, CategoryFilters as CategoryFiltersType } from '@/types/snowboard'
 import {
-  fetchSnowboards,
   fetchSnowboardsFiltered,
   createProduct,
   updateProduct,
@@ -32,20 +31,18 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   })
 
   async function loadPage() {
+    const response = await fetchSnowboardsFiltered(searchQuery.value, {
+      gender: gender.value,
+      styles: styles.value,
+    })
+    const filtered = response.products.filter((product) => !deletedIds.value.has(product.id))
+    total.value = filtered.length
+
     if (searchQuery.value.trim() || hasFilters.value) {
-      const response = await fetchSnowboardsFiltered(searchQuery.value, {
-        gender: gender.value,
-        styles: styles.value,
-      })
-      const filtered = response.products.filter((product) => !deletedIds.value.has(product.id))
       snowboards.value = filtered
-      total.value = filtered.length
     } else {
-      const response = await fetchSnowboards(limit, page.value * limit)
-      const filtered = response.products.filter((product) => !deletedIds.value.has(product.id))
-      snowboards.value = filtered
-      const apiResponseTotal = response.total ?? response.products.length
-      total.value = Math.max(0, apiResponseTotal - deletedIds.value.size)
+      const start = page.value * limit
+      snowboards.value = filtered.slice(start, start + limit)
     }
   }
 
@@ -78,8 +75,7 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   async function deleteSnowboard(id: number) {
     await deleteProduct(id)
     deletedIds.value = new Set([...deletedIds.value, id])
-    snowboards.value = snowboards.value.filter((s) => s.id !== id)
-    total.value = Math.max(0, total.value - 1)
+    await loadPage()
   }
 
   function setPage(value: number) {
