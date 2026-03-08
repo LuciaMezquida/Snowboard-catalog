@@ -43,9 +43,15 @@
 
 ### Delete
 
-- [] Delete item
+- [x] Delete item
+- [x] Delete confirmation modal
 
 ### Tests
 
 - []
 - []
+
+### Improvements
+
+- [] Toasts
+- [] Product image in detail sidepanel

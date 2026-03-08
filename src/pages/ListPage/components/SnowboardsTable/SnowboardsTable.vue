@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
+import { h, ref, watch } from 'vue'
 import { FlexRender, createColumnHelper, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
 import type { Snowboard } from '@/types/snowboard'
 import {
@@ -16,17 +16,46 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PackageSearch, Pencil, Plus, Search, Trash2 } from 'lucide-vue-next'
 import CategoryFilters from '../CategoryFilters/CategoryFilters.vue'
+import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal.vue'
 import DetailSidepanel from '../DetailsSidepanel/DetailSidepanel.vue'
 import type { Gender, Style } from '@/types/snowboard'
 import { formatPrice, formatStyleLabel, getStyleBadgeClass } from '@/lib/utils'
 
 const sheetOpen = ref(false)
 const selectedSnowboard = ref<Snowboard | null>(null)
+const deleteDialogOpen = ref(false)
+const snowboardToDelete = ref<Snowboard | null>(null)
 
 function openRowDetail(snowboard: Snowboard) {
   selectedSnowboard.value = snowboard
   sheetOpen.value = true
 }
+
+function openDeleteDialog(snowboard: Snowboard) {
+  snowboardToDelete.value = snowboard
+  deleteDialogOpen.value = true
+}
+
+async function confirmDelete() {
+  const snowboard = snowboardToDelete.value
+  if (snowboard && props.onDelete) {
+    await props.onDelete(snowboard.id)
+    if (selectedSnowboard.value?.id === snowboard.id) {
+      sheetOpen.value = false
+      selectedSnowboard.value = null
+    }
+    deleteDialogOpen.value = false
+    snowboardToDelete.value = null
+  }
+}
+
+function cancelDelete() {
+  snowboardToDelete.value = null
+}
+
+watch(deleteDialogOpen, (open) => {
+  if (!open) snowboardToDelete.value = null
+})
 
 const props = defineProps<{
   snowboards: Snowboard[]
@@ -130,15 +159,9 @@ const columns = [
                 'rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-foreground hover:text-destructive',
               'aria-label': `Delete ${title}`,
               title: `Delete ${title}`,
-              onClick: async (e) => {
+              onClick: (e) => {
                 e.stopPropagation()
-                if (props.onDelete) {
-                  await props.onDelete(snowboard.id)
-                  if (selectedSnowboard.value?.id === snowboard.id) {
-                    sheetOpen.value = false
-                    selectedSnowboard.value = null
-                  }
-                }
+                openDeleteDialog(snowboard)
               },
             },
             [h(Trash2, { class: 'size-4' })]
@@ -241,7 +264,10 @@ const table = useVueTable({
                 'w-24': cell.column.id === 'actions',
               }"
             >
-              <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+              <div v-if="cell.column.id === 'actions'" class="contents" @click.stop>
+                <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+              </div>
+              <FlexRender v-else :render="cell.column.columnDef.cell" :props="cell.getContext()" />
             </TableCell>
           </TableRow>
         </TableBody>
@@ -274,5 +300,12 @@ const table = useVueTable({
     </div>
 
     <DetailSidepanel v-model:open="sheetOpen" :selected-snowboard="selectedSnowboard" />
+
+    <DeleteConfirmationModal
+      v-model:open="deleteDialogOpen"
+      :snowboard="snowboardToDelete"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
+    />
   </div>
 </template>
