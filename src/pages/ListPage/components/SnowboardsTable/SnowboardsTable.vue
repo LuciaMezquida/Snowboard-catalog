@@ -143,7 +143,7 @@ const columns = [
       const styles = info.getValue() ?? []
       return h(
         'div',
-        { class: 'flex flex-wrap gap-1' },
+        { class: 'flex flex-nowrap gap-1' },
         styles.map((style) =>
           h(Badge, { class: `whitespace-nowrap capitalize ${getStyleBadgeClass(style)}` }, () =>
             formatStyleLabel(style)
@@ -237,8 +237,8 @@ const table = useVueTable({
         </Button>
       </div>
     </div>
-    <div class="h-[560px]">
-      <Table>
+    <div class="h-[560px] min-w-0">
+      <Table class="table-fixed min-w-[1200px]">
         <TableHeader>
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead
@@ -246,7 +246,9 @@ const table = useVueTable({
               :key="header.id"
               :colspan="header.colSpan"
               :class="{
-                'w-[240px]': header.column.id === 'title',
+                'min-w-[200px] w-[240px]': header.column.id === 'title',
+                'min-w-[120px] w-[140px]': header.column.id === 'brand',
+                'min-w-[240px] w-[300px]': header.column.id === 'style',
                 'text-right': ['price', 'discountPercentage', 'stock'].includes(header.column.id),
                 'pl-6': ['discountPercentage', 'gender'].includes(header.column.id),
                 capitalize: header.column.id === 'gender',
@@ -284,7 +286,9 @@ const table = useVueTable({
               v-for="cell in row.getVisibleCells()"
               :key="cell.id"
               :class="{
-                'w-[240px]': cell.column.id === 'title',
+                'min-w-[200px] w-[240px] whitespace-nowrap': cell.column.id === 'title',
+                'min-w-[120px] w-[140px] whitespace-nowrap': cell.column.id === 'brand',
+                'min-w-[280px] w-[320px]': cell.column.id === 'style',
                 'text-right': ['price', 'discountPercentage', 'stock'].includes(cell.column.id),
                 'pl-6': ['discountPercentage', 'gender'].includes(cell.column.id),
                 capitalize: cell.column.id === 'gender',

@@ -59,34 +59,38 @@ function clearAllFilters() {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-3">
+  <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
     <span class="text-sm font-medium text-muted-foreground">Category</span>
-    <DropdownMenu>
-      <DropdownMenuTrigger as-child>
-        <Button variant="outline" size="sm" class="w-[130px] justify-between gap-2">
-          {{ genderLabel() }}
-          <ChevronDown class="size-4 shrink-0 opacity-50" aria-hidden />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" class="w-[130px]">
-        <DropdownMenuRadioGroup
-          :model-value="props.gender"
-          @update:model-value="onGenderChange($event)"
-        >
-          <DropdownMenuRadioItem v-for="opt in GENDER_OPTIONS" :key="opt.value" :value="opt.value">
-            {{ opt.label }}
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          class="justify-center text-center text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950/30 dark:focus:text-red-300"
-          @select="emit('update:gender', '')"
-        >
-          Clear filter
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="outline" size="sm" class="w-[130px] justify-between gap-2">
+            {{ genderLabel() }}
+            <ChevronDown class="size-4 shrink-0 opacity-50" aria-hidden />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="w-[130px]">
+          <DropdownMenuRadioGroup
+            :model-value="props.gender"
+            @update:model-value="onGenderChange($event)"
+          >
+            <DropdownMenuRadioItem
+              v-for="opt in GENDER_OPTIONS"
+              :key="opt.value"
+              :value="opt.value"
+            >
+              {{ opt.label }}
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            class="justify-center text-center text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950/30 dark:focus:text-red-300"
+            @select="emit('update:gender', '')"
+          >
+            Clear filter
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="outline" size="sm" class="min-w-[130px] justify-between gap-2">
