@@ -63,18 +63,19 @@ pnpm test:e2e:open
 │   ├── components/
 │   │   └── ui/                         # shadcn-vue UI components (table, button, input, badge…)
 │   ├── lib/
-│   │   └── utils.ts                    # Shared utilities (cn, etc.)
+│   │   └── styleUtils.ts               # Shared utilities (cn, etc.)
 │   ├── pages/
 │   │   └── ListPage/                   # Product list page
 │   │       ├── ListPage.vue
 │   │       └── components/
 │   │           ├── CategoryFilters/    # Filter by category
 │   │           ├── DetailsSidepanel/   # Side panel with product details
+│   │           ├── ProductFormDialog/  # Form for create/edit operations
 │   │           └── SnowboardsTable/    # TanStack Table implementation
 │   ├── router/
 │   │   └── index.ts                    # Vue Router configuration
 │   ├── types/
-│   │   └── snowboard.ts                # TypeScript types
+│   │   └── snowboards.ts               # TypeScript types
 │   ├── App.vue                         # Root component
 │   ├── main.ts                         # Application entry point
 │   └── style.css                       # Global styles
@@ -85,7 +86,13 @@ pnpm test:e2e:open
 └── index.html                          # HTML entry point
 ```
 
-## Key technical decisions
+## Key technical decisions and trade-offs
+
+To provide a cohesive, realistic, and visually appealing user experience, I chose to theme the catalog around "Snowboards" rather than using the generic, mixed products provided by the default endpoint.
+
+### State Management with Pinia
+
+Since DummyJSON does not persist writes (POST, PUT, DELETE), I introduced Pinia. This allows the application to handle CRUD operations smoothly in the client without polluting the Vue components with complex data manipulation logic. The store acts as a single source of truth, merging the initial API data with local mutations to simulate a real, persistent application layer.
 
 ### TanStack Table for product listing
 
@@ -109,11 +116,19 @@ A side panel is also sufficient to display all the relevant product information,
 
 **Trade-off.** With this approach, the details shown in the panel may be out of sync with the backend. For this use case, I considered it unnecessary to add an extra request because the data is not modified.
 
-### Improvements
+### Testing approach
 
-- Using GraphQL with a data source allows you to optimize requests from the frontend to only load the necessary data, which makes it more efficient in my experience.
-- Add images for the detail view.
-- The toast informs the user whether their request succeeded or failed. Always provide feedback to the user.
+A robust testing strategy was implemented to ensure code quality:
+
+- Unit Testing (Vitest & Vue Test Utils): 69 passing tests covering core logic, component rendering, and edge cases for filters, tables, and dialogs.
+- E2E Testing (Cypress): Automated flows verifying the user journey (navigation, searching, and simulating CRUD actions in the UI).
+
+## Improvements
+
+- GraphQL / BFF: Using GraphQL or a Backend-for-Frontend (BFF) would allow the frontend to optimize requests, loading only the necessary fields for the table view and deferring heavy data for the detail view.
+- Media Assets: Add images for the detail view to make the catalog more visually engaging.
+- User Feedback (Toasts): Adding global toast notifications to inform the user whether their create/update/delete request succeeded or failed.
+- Internationalization (i18n): Add multi-language support (e.g. with vue-i18n) so the app can be shown in different languages based on user preference.
 
 ## AI tools
 
