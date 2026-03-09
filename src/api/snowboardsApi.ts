@@ -32,16 +32,17 @@ function buildFetchUrl(params: FetchSnowboardsParams): string {
     limit = SNOWBOARDS_API_QUERY_LIMIT,
     skip = 0,
   } = params
+
   const searchParams = new URLSearchParams()
   if (limit > 0) searchParams.set('limit', String(limit))
   searchParams.set('skip', String(skip))
   if (searchQuery.trim()) searchParams.set('q', searchQuery.trim())
   if (gender) searchParams.set('gender', gender)
-  styles.forEach((s) => searchParams.append('style', s))
+  styles.forEach((style) => searchParams.append('style', style))
 
-  const query = searchParams.toString()
+  const stringifiedParams = searchParams.toString()
   const basePath = searchQuery.trim() ? `${SNOWBOARDS_API_URL}/search` : SNOWBOARDS_API_URL
-  return query ? `${basePath}?${query}` : basePath
+  return stringifiedParams ? `${basePath}?${stringifiedParams}` : basePath
 }
 
 async function fetchFromApi(url: string): Promise<SnowboardsResponse> {
@@ -65,7 +66,7 @@ export function matchesSearch(product: Snowboard, searchValue: string): boolean 
 export function matchesCategoryFilters(product: Snowboard, filters: CategoryFilters): boolean {
   if (filters.gender && product.gender !== filters.gender) return false
   if (filters.styles.length > 0) {
-    const hasStyle = filters.styles.some((s) => product.style?.includes(s))
+    const hasStyle = filters.styles.some((style) => product.style?.includes(style))
     if (!hasStyle) return false
   }
   return true
@@ -78,17 +79,17 @@ function applyClientSideFilter(
 ): Snowboard[] {
   let filtered = products
   if (searchQuery.trim()) {
-    filtered = filtered.filter((p) => matchesSearch(p, searchQuery))
+    filtered = filtered.filter((product) => matchesSearch(product, searchQuery))
   }
   if (filters.gender || filters.styles.length > 0) {
-    filtered = filtered.filter((p) => matchesCategoryFilters(p, filters))
+    filtered = filtered.filter((product) => matchesCategoryFilters(product, filters))
   }
   return filtered
 }
 
 /**
  * Fetches snowboards with pagination (?limit=&skip=), search (/search?q=), and category filters.
- * DummyJSON custom collection may not support these params server-side; we apply client-side
+ * DummyJSON custom collection may not support these params server-side; I've applied client-side
  * filtering as fallback. Returns full filtered set for store merge; pagination is applied
  * by the store after merging with local state.
  */
@@ -119,7 +120,7 @@ export async function fetchSnowboardsFiltered(
 
 // Mutations
 
-// DEPRECATED:DummyJSON custom collection doesn't support DELETE
+// DummyJSON custom collection doesn't support DELETE
 // export async function deleteProduct(id: number): Promise<void> {
 //   const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, { method: 'DELETE' })
 //   if (!res.ok) throw new Error('Failed to delete product')

@@ -26,8 +26,6 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   const localUpdated = ref<Map<number, Snowboard>>(new Map())
   const nextLocalIdCounter = ref(0)
 
-  const hasFilters = computed(() => !!gender.value || styles.value.length > 0)
-
   const displayedSnowboards = computed(() => {
     const start = page.value * limit
     return snowboards.value.slice(start, start + limit)
@@ -37,15 +35,15 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
     const updated = new Map(localUpdated.value)
     const filters = { gender: gender.value, styles: styles.value }
     const created = localCreated.value
-      .filter((p) => {
-        if (searchQuery.value.trim() && !matchesSearch(p, searchQuery.value)) return false
-        if (!matchesCategoryFilters(p, filters)) return false
+      .filter((product) => {
+        if (searchQuery.value.trim() && !matchesSearch(product, searchQuery.value)) return false
+        if (!matchesCategoryFilters(product, filters)) return false
         return true
       })
-      .map((p) => updated.get(p.id) ?? p)
+      .map((product) => updated.get(product.id) ?? product)
     const merged = apiProducts
-      .filter((p) => !deletedIds.value.has(p.id))
-      .map((p) => updated.get(p.id) ?? p)
+      .filter((product) => !deletedIds.value.has(product.id))
+      .map((product) => updated.get(product.id) ?? product)
     return [...created, ...merged]
   }
 
@@ -118,7 +116,6 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   }
 
   return {
-    snowboards,
     page,
     total,
     limit,
@@ -126,7 +123,6 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
     gender,
     styles,
     displayedSnowboards,
-    hasFilters,
     loadPage,
     runSearch,
     createSnowboard,
