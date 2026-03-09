@@ -253,5 +253,34 @@ describe('ProductFormDialog', () => {
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('Use a single comma between values')
     })
+
+    it('shows error when sizes has empty entries between commas', async () => {
+      const wrapper = createWrapper({ open: true, snowboard: null })
+      await wrapper.find('#sizes').setValue('133, , 133')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('Remove empty entries between commas')
+    })
+
+    it('shows error when sizes contains invalid letters (only "w" after number is allowed)', async () => {
+      const wrapper = createWrapper({ open: true, snowboard: null })
+      await wrapper.find('#sizes').setValue('147d, ffd99')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('Each value must be a number')
+    })
+
+    it('shows error when stiffness is out of range (1-10)', async () => {
+      const wrapper = createWrapper({ open: true, snowboard: null })
+      await wrapper.find('#stiffness').setValue('99')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('Stiffness must be between 1 and 10')
+    })
+
+    it('accepts sizes with optional "w" or "W" suffix', async () => {
+      const wrapper = createWrapper({ open: true, snowboard: null })
+      await wrapper.find('#sizes').setValue('147, 154w, 158W')
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).not.toContain('Each value must be a number')
+      expect(wrapper.text()).not.toContain('Remove empty entries')
+    })
   })
 })

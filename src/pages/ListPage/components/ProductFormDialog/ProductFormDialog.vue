@@ -54,7 +54,7 @@ const form = ref({
   style: [] as Style[],
   gender: 'unisex' as Gender,
   sizes: '' as string,
-  stiffness: 0,
+  stiffness: 1,
 })
 
 function resetForm() {
@@ -69,7 +69,7 @@ function resetForm() {
     style: [],
     gender: 'unisex',
     sizes: '',
-    stiffness: 0,
+    stiffness: 1,
   }
 }
 
@@ -85,7 +85,7 @@ function fillForm(snowboard: Snowboard) {
     style: [...(snowboard.style ?? [])],
     gender: snowboard.gender ?? 'unisex',
     sizes: (snowboard.sizes ?? []).join(', '),
-    stiffness: snowboard.stiffness ?? 0,
+    stiffness: Math.max(1, Math.min(10, snowboard.stiffness ?? 1)),
   }
 }
 
@@ -123,7 +123,7 @@ const isFormValid = computed(() => {
   if (!isValidNumber(f.stock, 0)) return false
   if (f.style.length === 0) return false
   if (parseSizes(f.sizes).length === 0 || sizesError.value) return false
-  if (!isValidNumber(f.stiffness, 0, 10)) return false
+  if (!isValidNumber(f.stiffness, 1, 10) || stiffnessError.value) return false
   return true
 })
 
@@ -133,10 +133,15 @@ function toggleStyle(style: Style) {
   else form.value.style = [...form.value.style, style]
 }
 
+/** Valid size: digits optionally followed by a single 'w' or 'W' (e.g. 147, 147w, 147W) */
+const VALID_SIZE_PATTERN = /^\d+[wW]?$/
+
 function parseSizes(str: string): number[] {
   return str
     .split(',')
-    .map((s) => parseInt(s.trim(), 10))
+    .map((s) => s.trim().replace(/[wW]$/, ''))
+    .filter((s) => s.length > 0)
+    .map((s) => parseInt(s, 10))
     .filter((n) => !Number.isNaN(n))
 }
 
@@ -149,13 +154,25 @@ const sizesError = computed(() => {
   if (/,,/.test(sizes)) {
     return 'Use a single comma between values (e.g. 150, 154, 158)'
   }
-  const sizesItems = sizes
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean)
-  const hasInvalidItem = sizesItems.some((p) => Number.isNaN(parseInt(p, 10)))
+  const sizesItems = sizes.split(',').map((item) => item.trim())
+  const hasEmptyEntry = sizesItems.some((item) => item === '')
+  if (hasEmptyEntry) {
+    return 'Remove empty entries between commas (e.g. 150, 154, 158)'
+  }
+  const hasInvalidItem = sizesItems.some((p) => !VALID_SIZE_PATTERN.test(p))
   if (hasInvalidItem) {
-    return 'All values must be numbers'
+    return 'Each value must be a number, optionally followed by "w" or "W" (e.g. 150, 154w, 154W)'
+  }
+  return null
+})
+
+const stiffnessError = computed(() => {
+  const val = form.value.stiffness
+  if (typeof val !== 'number' || Number.isNaN(val)) {
+    return 'Stiffness must be a number between 1 and 10'
+  }
+  if (val < 1 || val > 10) {
+    return 'Stiffness must be between 1 and 10'
   }
   return null
 })
@@ -342,12 +359,14 @@ function handleCancel() {
               id="stiffness"
               v-model.number="form.stiffness"
               type="number"
-              min="0"
+              min="1"
               max="10"
               required
-              placeholder="0"
+              placeholder="1"
             />
-            <p class="min-h-5 text-xs" aria-hidden="true">&nbsp;</p>
+            <p class="min-h-5 text-xs text-destructive" :class="{ invisible: !stiffnessError }">
+              {{ stiffnessError || '\u00A0' }}
+            </p>
           </div>
         </div>
         <DialogFooter class="gap-2 sm:gap-2">
