@@ -1,5 +1,8 @@
 # Snowboard Catalog
 
+<img width="1500" height="825" alt="image" src="https://github.com/user-attachments/assets/180f414a-d2ba-4d4c-9dce-e4cae86f21b5" />
+
+
 This application displays a paginated list of snowboards fetched from an external API. Users can filter by gender and style, search by name and brand, view product details in a side panel, and perform create, read, update, and delete operations that are simulated in the store (the API does not support write operations).
 
 Web application built with [Vue 3](https://vuejs.org/) (Composition API), [TypeScript](https://www.typescriptlang.org/), and [Vite](https://vite.dev/). The stack includes [Shadcn](https://ui.shadcn.com/) for components and icons, [Pinia](https://pinia.vuejs.org/) for state management, [Tailwind CSS](https://tailwindcss.com/) for styling, [Cypress](https://www.cypress.io/) for E2E testing, and [Vitest](https://vitest.dev/) with [Vue Test Utils](https://test-utils.vuejs.org/) for unit tests.
