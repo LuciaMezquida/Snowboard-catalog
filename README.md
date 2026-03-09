@@ -116,7 +116,7 @@ A side panel is also sufficient to display all the relevant product information,
 
 A robust testing strategy was implemented to ensure code quality:
 
-- Unit Testing (Vitest & Vue Test Utils): 69 passing tests covering core logic, component rendering, and edge cases for filters, tables, and dialogs.
+- Unit Testing (Vitest & Vue Test Utils): 73 passing tests covering core logic, component rendering, and edge cases for filters, tables, and dialogs.
 - E2E Testing (Cypress): Automated flows verifying the user journey (navigation, searching, and simulating CRUD actions in the UI).
 
 ## Improvements
