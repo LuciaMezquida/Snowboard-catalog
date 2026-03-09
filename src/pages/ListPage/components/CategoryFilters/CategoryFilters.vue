@@ -122,7 +122,7 @@ function clearAllFilters() {
       <Button
         v-if="props.styles.length > 0 || props.gender"
         variant="outline"
-        size="xxs"
+        size="xs"
         class="shrink-0 rounded-full border-red-200 px-2.5 py-0.5 text-xs text-red-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700 dark:border-red-900/50 dark:text-red-400 dark:hover:border-red-800 dark:hover:bg-red-950/30 dark:hover:text-red-300"
         @click="clearAllFilters"
       >
