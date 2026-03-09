@@ -92,7 +92,7 @@ To provide a cohesive, realistic, and visually appealing user experience, I chos
 
 ### State Management with Pinia
 
-Since DummyJSON does not persist writes (POST, PUT, DELETE), I introduced Pinia. This allows the application to handle CRUD operations smoothly in the client without polluting the Vue components with complex data manipulation logic. The store acts as a single source of truth, merging the initial API data with local mutations to simulate a real, persistent application layer.
+Since DummyJSON does not persist writes (POST or PUT), I introduced Pinia. This allows the application to handle CRUD operations smoothly in the client without polluting the Vue components with complex data manipulation logic. The store acts as a single source of truth, merging the initial API data with local mutations to simulate a real, persistent application layer.
 
 ### TanStack Table for product listing
 
@@ -103,10 +103,6 @@ The product list uses [TanStack Table](https://tanstack.com/table) instead of a 
 **Maintainability.** The component stays focused on rendering — where each piece of data goes and how it looks. The logic for filtering, sorting, and paginating rows is delegated to a well-tested library, which keeps the component lean and easy to reason about.
 
 **Pragmatism.** TanStack Table is the industry standard for headless table logic in both React and Vue ecosystems. Reaching for it avoids reinventing solved problems and means the solution is familiar to any developer joining the project.
-
-### Create and update handled in the frontend
-
-DummyJSON does not support POST or PUT. Create and update are therefore handled entirely in the frontend: the store maintains `localCreated` and `localUpdated` state, merges it with API data when loading, and the UI behaves as if mutations were persisted. Reads still come from the API; writes are local-only.
 
 ### Side panel for product details
 
@@ -129,6 +125,8 @@ A robust testing strategy was implemented to ensure code quality:
 - Media Assets: Add images for the detail view to make the catalog more visually engaging.
 - User Feedback (Toasts): Adding global toast notifications to inform the user whether their create/update/delete request succeeded or failed.
 - Internationalization (i18n): Add multi-language support (e.g. with vue-i18n) so the app can be shown in different languages based on user preference.
+- Configurable Pagination: Allow users to choose how many items are shown per page.
+- Product Analytics & Observability: Integrate product analytics tools (e.g. Amplitude) to track user behaviour and feature usage.
 
 ## AI tools
 
