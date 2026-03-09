@@ -21,7 +21,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ChevronDown, Square, SquareCheck } from 'lucide-vue-next'
-import { formatStyleLabel, GENDER_OPTIONS, isValidNumber, STYLE_OPTIONS } from '@/lib/utils'
+import { GENDER_OPTIONS, isValidNumber, STYLE_OPTIONS } from '@/lib/utils'
+import { formatStyleLabel } from '@/lib/formatters'
 
 const store = useSnowboardsStore()
 

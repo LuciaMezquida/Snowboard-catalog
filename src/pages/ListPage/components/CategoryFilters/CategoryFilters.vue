@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, Square, SquareCheck } from 'lucide-vue-next'
-import { formatStyleLabel, GENDER_OPTIONS, STYLE_OPTIONS } from '@/lib/utils'
+import { GENDER_OPTIONS, STYLE_OPTIONS } from '@/lib/utils'
+import { formatStyleLabel } from '@/lib/formatters'
 
 const props = defineProps<{
   gender: Gender | ''

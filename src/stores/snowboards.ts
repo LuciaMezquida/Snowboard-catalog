@@ -7,8 +7,8 @@ import {
   invalidateSnowboardsCache,
   matchesSearch,
   matchesCategoryFilters,
-  QUERY_LIMIT,
-} from '@/api/actions'
+  SNOWBOARDS_API_QUERY_LIMIT,
+} from '@/api/snowboardsApi'
 
 export type CreateSnowboardPayload = Omit<Snowboard, 'id'>
 export type UpdateSnowboardPayload = Partial<CreateSnowboardPayload>
@@ -16,7 +16,7 @@ export type UpdateSnowboardPayload = Partial<CreateSnowboardPayload>
 export const useSnowboardsStore = defineStore('snowboards', () => {
   const snowboards = ref<Snowboard[]>([])
   const page = ref(0)
-  const limit = QUERY_LIMIT
+  const limit = SNOWBOARDS_API_QUERY_LIMIT
   const total = ref(0)
   const searchQuery = ref('')
   const gender = ref<CategoryFiltersType['gender']>('')
@@ -51,9 +51,12 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   }
 
   async function loadPage() {
-    const response = await fetchSnowboardsFiltered(searchQuery.value, {
+    const response = await fetchSnowboardsFiltered({
+      searchQuery: searchQuery.value,
       gender: gender.value,
       styles: styles.value,
+      limit,
+      skip: page.value * limit,
     })
     const merged = mergeWithLocal(response.products)
     total.value = merged.length

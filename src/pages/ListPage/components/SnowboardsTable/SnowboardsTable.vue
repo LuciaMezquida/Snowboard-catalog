@@ -20,7 +20,8 @@ import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmati
 import DetailSidepanel from '../DetailsSidepanel/DetailSidepanel.vue'
 import ProductFormDialog from '../ProductFormDialog/ProductFormDialog.vue'
 import type { Gender, Style } from '@/types/snowboard'
-import { formatPrice, formatStyleLabel, getStyleBadgeClass } from '@/lib/utils'
+import { getStyleBadgeClass } from '@/lib/utils'
+import { formatPrice, formatStyleLabel } from '@/lib/formatters'
 
 const sheetOpen = ref(false)
 const selectedSnowboard = ref<Snowboard | null>(null)

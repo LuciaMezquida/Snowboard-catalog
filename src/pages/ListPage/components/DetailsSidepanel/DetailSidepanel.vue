@@ -8,7 +8,8 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { Badge } from '@/components/ui/badge'
-import { formatPrice, formatStyleLabel, getStyleBadgeClass } from '@/lib/utils'
+import { getStyleBadgeClass } from '@/lib/utils'
+import { formatPrice, formatStyleLabel } from '@/lib/formatters'
 
 defineProps<{
   open: boolean

@@ -17,6 +17,7 @@ export default [
       parser: parserVue,
       globals: {
         fetch: 'readonly',
+        URLSearchParams: 'readonly',
       },
       parserOptions: {
         parser: parserTs,

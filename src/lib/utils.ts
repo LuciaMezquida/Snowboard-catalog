@@ -30,22 +30,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatStyleLabel(value: string): string {
-  return value.replace(/_/g, ' ')
-}
-
 export function isValidNumber(val: unknown, min = 0, max?: number): boolean {
   if (typeof val !== 'number' || Number.isNaN(val)) return false
   if (val < min) return false
   if (max !== undefined && val > max) return false
   return true
-}
-
-export function formatPrice(cents: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(cents / 100)
 }
 
 export function getStyleBadgeClass(style: string): string {

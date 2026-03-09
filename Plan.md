@@ -1,5 +1,7 @@
 # Build Plan
 
+This is the roadmap I followed to complete the frontend technical challenge for Vivara
+
 ## Steps completed
 
 ### Foundations and Setup
@@ -56,3 +58,4 @@
 
 - [] Toasts
 - [] Product image in detail sidepanel
+- [] Create a no-sql database (eg, firebase)
