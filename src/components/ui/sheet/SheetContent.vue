@@ -11,7 +11,7 @@ import {
   DialogPortal,
   useForwardPropsEmits,
 } from 'reka-ui'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/styleUtils'
 import { sheetVariants } from '.'
 
 interface SheetContentProps extends DialogContentProps {

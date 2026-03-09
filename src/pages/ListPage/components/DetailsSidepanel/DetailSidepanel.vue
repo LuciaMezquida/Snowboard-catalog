@@ -8,7 +8,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { Badge } from '@/components/ui/badge'
-import { getStyleBadgeClass } from '@/lib/utils'
+import { getStyleBadgeClass } from '@/lib/styleUtils'
 import { formatPrice, formatStyleLabel } from '@/lib/formatters'
 
 defineProps<{
