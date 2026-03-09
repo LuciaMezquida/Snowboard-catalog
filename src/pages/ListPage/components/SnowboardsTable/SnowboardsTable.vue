@@ -43,13 +43,16 @@ function openDeleteDialog(snowboard: Snowboard) {
 async function confirmDelete() {
   const snowboard = snowboardToDelete.value
   if (snowboard && props.onDelete) {
-    await props.onDelete(snowboard.id)
-    if (selectedSnowboard.value?.id === snowboard.id) {
-      sheetOpen.value = false
-      selectedSnowboard.value = null
+    try {
+      await props.onDelete(snowboard.id)
+      if (selectedSnowboard.value?.id === snowboard.id) {
+        sheetOpen.value = false
+        selectedSnowboard.value = null
+      }
+    } finally {
+      deleteDialogOpen.value = false
+      snowboardToDelete.value = null
     }
-    deleteDialogOpen.value = false
-    snowboardToDelete.value = null
   }
 }
 

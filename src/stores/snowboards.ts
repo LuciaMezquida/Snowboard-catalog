@@ -3,7 +3,6 @@ import { ref, computed } from 'vue'
 import type { Snowboard, CategoryFilters as CategoryFiltersType } from '@/types/snowboard'
 import {
   fetchSnowboardsFiltered,
-  deleteProduct,
   invalidateSnowboardsCache,
   matchesSearch,
   matchesCategoryFilters,
@@ -103,8 +102,6 @@ export const useSnowboardsStore = defineStore('snowboards', () => {
   }
 
   async function deleteSnowboard(id: number) {
-    const isLocal = localCreated.value.some((s) => s.id === id)
-    if (!isLocal) await deleteProduct(id)
     deletedIds.value = new Set([...deletedIds.value, id])
     localCreated.value = localCreated.value.filter((s) => s.id !== id)
     localUpdated.value = new Map(localUpdated.value)

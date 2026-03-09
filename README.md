@@ -88,11 +88,11 @@ pnpm test:e2e:open
 
 ## Key technical decisions and trade-offs
 
-To provide a cohesive, realistic, and visually appealing user experience, I chose to theme the catalog around "Snowboards" rather than using the generic, mixed products provided by the default endpoint.
+To provide a cohesive, realistic, and visually appealing user experience, I chose to theme the catalog around "Snowboards" rather than using the generic mixed products provided by the default endpoint.
 
 ### State Management with Pinia
 
-Since DummyJSON does not persist writes (POST or PUT), I introduced Pinia. This allows the application to handle CRUD operations smoothly in the client without polluting the Vue components with complex data manipulation logic. The store acts as a single source of truth, merging the initial API data with local mutations to simulate a real, persistent application layer.
+Since DummyJSON does not persist writes (POST, PUT or DELETE), I introduced Pinia. This allows the application to handle CRUD operations smoothly in the client without polluting the Vue components with complex data manipulation logic. The store acts as a single source of truth, merging the initial API data with local mutations to simulate a real, persistent application layer.
 
 ### TanStack Table for product listing
 

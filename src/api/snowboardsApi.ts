@@ -119,7 +119,8 @@ export async function fetchSnowboardsFiltered(
 
 // Mutations
 
-export async function deleteProduct(id: number): Promise<void> {
-  const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, { method: 'DELETE' })
-  if (!res.ok) throw new Error('Failed to delete product')
-}
+// DEPRECATED:DummyJSON custom collection doesn't support DELETE
+// export async function deleteProduct(id: number): Promise<void> {
+//   const res = await fetch(`${SNOWBOARDS_API_URL}/${id}`, { method: 'DELETE' })
+//   if (!res.ok) throw new Error('Failed to delete product')
+// }
