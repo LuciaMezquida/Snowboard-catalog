@@ -141,3 +141,17 @@ Models used:
 - **Gemini 3.1 Pro** — Questions, planning, and verification
 
 All work was done under my supervision. The codebase is not 100% AI-generated; I wrote significant portions myself and validated every change before accepting it.
+
+## 🧪 Bonus: Exploring the standard API (Vibe Coding Experiment)
+
+After finishing the technical test, I was curious about how the project would look and behave if I strictly used the standard, non-custom DummyJSON /products endpoint.
+
+To test this quickly, I did a "vibe coding" experiment using OpenCode and the Gemini 3.1 Pro Preview model without close supervision. The result is the screenshot below:
+
+https://github.com/user-attachments/assets/acc7aa67-38f6-488a-8e75-8663fa13e7e1
+
+
+While this approach strictly consumes the dynamic API endpoints, I noticed significant UX drawbacks:
+
+- State Reset: Since the API doesn't persist POST/PUT/DELETE requests, any user changes (creates, edits, deletions) are instantly wiped out the moment they search, change pages, or filter, because the table re-fetches the original read-only data.
+- Why the Custom Approach is Better: By using Pinia to manage the data locally after the initial fetch, the "Snowboard Catalog" keeps the user's CRUD actions persistent across filters and pagination. It behaves like a fully functional app during the session, offering a much better and less frustrating user experience.
